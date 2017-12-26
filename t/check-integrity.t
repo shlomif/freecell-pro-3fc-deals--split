@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More;
+use Test::More tests => 861;
 use Path::Tiny qw/ path /;
 
 {
@@ -19,6 +19,7 @@ use Path::Tiny qw/ path /;
             last INT;
         }
     }
+    # TEST
     ok( $ok, "Nums are sorted.");
 
     my %intract;
@@ -49,12 +50,10 @@ use Path::Tiny qw/ path /;
             }
             $last = $i;
         }
+        # TEST*859
         pass("$bn is ok.");
     }
 
     # TEST
     pass("All range files are fine.");
-
 }
-
-done_testing;
