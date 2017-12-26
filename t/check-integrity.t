@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More;
 use Path::Tiny qw/ path /;
 
 {
@@ -19,7 +19,6 @@ use Path::Tiny qw/ path /;
             last INT;
         }
     }
-    # TEST
     ok( $ok, "Nums are sorted.");
 
     my %intract;
@@ -43,11 +42,19 @@ use Path::Tiny qw/ path /;
                 fail("$i is out of range in $bn");
                 die "out";
             }
+            if (exists $intract{$i})
+            {
+                fail("$i is intractable in $bn");
+                die "int";
+            }
             $last = $i;
         }
+        pass("$bn is ok.");
     }
 
     # TEST
     pass("All range files are fine.");
+
 }
 
+done_testing;
