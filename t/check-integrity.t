@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 use Path::Tiny qw/ path /;
 
 {
@@ -21,5 +21,33 @@ use Path::Tiny qw/ path /;
     }
     # TEST
     ok( $ok, "Nums are sorted.");
+
+    my %intract;
+    @intract{@int_nums} = ();
+    foreach my $fh (path("Imp3/")->children(qr/XXXXXXX\.txt\z/))
+    {
+        my $bn = $fh->basename;
+        my $s_re = $bn =~ s#\.txt\z##r =~ s/X/[0-9]/gr;
+        my $re = qr#\A$s_re\z#;
+
+        my $last = -1;
+        foreach my $i ($fh->lines_raw({chomp => 1}))
+        {
+            if ($i <= $last)
+            {
+                fail("$i is not ordered in $bn");
+                die "foo";
+            }
+            if (sprintf("%010d", $i) !~ $re)
+            {
+                fail("$i is out of range in $bn");
+                die "out";
+            }
+            $last = $i;
+        }
+    }
+
+    # TEST
+    pass("All range files are fine.");
 }
 
