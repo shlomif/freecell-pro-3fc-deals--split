@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+use autodie;
 
 use Test::More tests => 861;
 use Path::Tiny qw/ path /;
@@ -35,8 +36,7 @@ INT:
         my $max  = int( $bn2 =~ s/X/9/gr );
 
         my $last = -1;
-        my $first;
-        my $in = $fh->openr_raw;
+        my $in   = $fh->openr_raw;
         while ( my $i = <$in> )
         {
             chomp $i;
@@ -51,7 +51,13 @@ INT:
                 die "int";
             }
             $last = $i;
-            $first //= $i;
+        }
+        my $first;
+        {
+            open my $in2, "<:raw", $fh;
+            $first = <$in2>;
+            chomp $first;
+            close $in2;
         }
         unless ( ( $first >= $min ) and ( $last <= $max ) )
         {
