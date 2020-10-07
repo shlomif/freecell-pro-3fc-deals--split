@@ -8,7 +8,7 @@ use Path::Tiny qw/ path /;
 
 {
     my @int_nums = path("Int3.txt")->lines_raw( { chomp => 1 } );
-    my $ok = 1;
+    my $ok       = 1;
 INT:
     foreach my $idx ( 0 .. $#int_nums - 1 )
     {
