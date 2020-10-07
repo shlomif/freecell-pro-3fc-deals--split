@@ -28,21 +28,22 @@ INT:
     foreach my $fh ( path("Imp3/")->children(qr/XXXXXXX\.txt\z/) )
     {
         my $bn   = $fh->basename;
-        my $s_re = $bn =~ s#\.txt\z##r =~ s/X/[0-9]/gr;
+        my $bn2  = $bn  =~ s#\.txt\z##r;
+        my $s_re = $bn2 =~ s/X/[0-9]/gr;
         my $re   = qr#\A$s_re\z#;
+        my $min  = int( $bn2 =~ s/X/0/gr );
+        my $max  = int( $bn2 =~ s/X/9/gr );
 
         my $last = -1;
-        foreach my $i ( $fh->lines_raw( { chomp => 1 } ) )
+        my $first;
+        my $in = $fh->openr_raw;
+        while ( my $i = <$in> )
         {
+            chomp $i;
             if ( $i <= $last )
             {
                 fail("$i is not ordered in $bn");
                 die "foo";
-            }
-            if ( sprintf( "%010d", $i ) !~ $re )
-            {
-                fail("$i is out of range in $bn");
-                die "out";
             }
             if ( exists $intract{$i} )
             {
@@ -50,6 +51,12 @@ INT:
                 die "int";
             }
             $last = $i;
+            $first //= $i;
+        }
+        unless ( ( $first >= $min ) and ( $last <= $max ) )
+        {
+            fail("$first/$last are out of range in $bn");
+            die "out";
         }
 
         # TEST*859
